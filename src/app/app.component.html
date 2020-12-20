@@ -1,7 +1,37 @@
-<div class="d-flex flex-column">
- c {{curCard?.Name}}  {{curCard?.Description}}
-<input title="Name" [(ngModel)]="name"/>
-<input title="Description" [(ngModel)]="description"/>
-
-<button (click)="createCard()" >Create new flash card</button>
+<div class="d-flex flex-column" >
+  <div class="text-center" style="font-size:100px">
+    {{curCard?.Name}} <br>
+  </div>
+  <div class="text-center h2">
+    {{curCard?.Pinyin}}
+  </div>
+  <div class="h3 p-5" style="white-space: pre">
+{{curCard?.Description}}
+  </div>
+  <br>
+  <div class="d-flex flex-row">
+    <div class="flex-fill"></div>
+    <button class="flex-fill" style="background-color: indianred; height: 70px" >Wrong</button>
+    <div class="flex-fill"></div>
+    <button class="flex-fill" style="background-color: darkseagreen; height: 70px">Right</button>
+    <div class="flex-fill"></div>
+  </div>
+  <br>
+  <br>
+  Name
+  <input title="Name" [(ngModel)]="name"/>
+  Pinyin
+  <input title="Pinyin" [(ngModel)]="pinyin"/>
+  Description
+  <textarea title="Description" [(ngModel)]="description"></textarea>
+  <button (click)="createCard()">Create new flash card</button>
+  <br>
+  <br>
+  Delete: {{cardToDelete?.Name}}
+  <div class="d-flex flex-row">
+  <button (click)="deleteCard()">Delete card</button>
+    <div class="flex-fill"></div>
+    <button (click)="copyToClipBoard()">Copy all to clipboard</button>
+    <button (click)="import()">Import</button>
+  </div>
 </div>
