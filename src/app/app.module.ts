@@ -2,14 +2,28 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
+import { ShowCardComponent } from './show-card/show-card.component';
+import {RouterModule, Routes} from '@angular/router';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {FormsModule} from '@angular/forms';
+
+const appRoutes: Routes = [
+  { path: 'showCard', component: ShowCardComponent },
+];
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ShowCardComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    RouterModule.forRoot(appRoutes),
+    // NgbModule.forRoot(),
+    NgbModule,
+    FormsModule
   ],
+  exports: [ RouterModule ],
   providers: [],
   bootstrap: [AppComponent]
 })
