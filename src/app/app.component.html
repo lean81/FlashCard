@@ -5,15 +5,15 @@
   <div class="text-center h2">
     {{curCard?.Pinyin}}
   </div>
-  <div class="h3 p-5" style="white-space: pre">
+  <div class="h3 pl-5 pr-5" style="white-space: pre">
 {{curCard?.Description}}
   </div>
   <br>
   <div class="d-flex flex-row">
     <div class="flex-fill"></div>
-    <button class="flex-fill" style="background-color: indianred; height: 70px" >Wrong</button>
+    <button class="flex-fill" (click)="wrongClicked()" style="background-color: indianred; height: 70px" >Wrong</button>
     <div class="flex-fill"></div>
-    <button class="flex-fill" style="background-color: darkseagreen; height: 70px">Right</button>
+    <button class="flex-fill" (click)="rightClicked()" style="background-color: darkseagreen; height: 70px">Right</button>
     <div class="flex-fill"></div>
   </div>
   <br>

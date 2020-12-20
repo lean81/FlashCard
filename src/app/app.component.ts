@@ -12,11 +12,12 @@ export class AppComponent  implements OnInit {
   constructor(private router: Router) {
   }
 
+
   title = 'FlashCard2';
   public curCard: Card = null;
   public cardToDelete: Card = null;
   public allCards: Card[] = [];
-
+  public remainingCardsInSet: Card[] = [];
 
   @Input()
   public name: string;
@@ -47,7 +48,7 @@ export class AppComponent  implements OnInit {
 
   ngOnInit(): void {
     this.allCards = JSON.parse(localStorage.getItem('allFlashCards')) ?? [];
-    this.curCard = this.allCards[0];
+    this.showNextCard();
   }
 
   public createCard(): void {
@@ -100,5 +101,28 @@ export class AppComponent  implements OnInit {
     this.allCards = JSON.parse(this.description) ?? [];
     this.description = '';
     this.curCard = this.allCards[0];
+  }
+
+  public wrongClicked(): void{
+    this.curCard.numWrong++;
+    this.showNextCard();
+  }
+
+  public rightClicked(): void{
+    this.curCard.numCorrect++;
+    this.showNextCard();
+  }
+  private showNextCard(): void{
+    if (this.remainingCardsInSet.length <= 1) {
+      const levelAndCards = this.allCards
+        .map(c =>  ({card: c, level: (c.numCorrect - c.numCorrect)}))
+        .sort((n1, n2) => n1.level - n2.level);
+      const grouped = levelAndCards.reduce((h, obj) => Object.assign(h, { [obj.level]:( h[obj.level] || [] ).concat(obj) }), {});
+      this.remainingCardsInSet = grouped[0].map(c => c.card);
+      this.curCard = this.remainingCardsInSet[0];
+    } else {
+      this.remainingCardsInSet = this.remainingCardsInSet.slice(1);
+      this.curCard = this.remainingCardsInSet[0];
+    }
   }
 }
