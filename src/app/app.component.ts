@@ -157,7 +157,7 @@ export class AppComponent  implements OnInit {
 
   private showNextCard(): void {
     this.allCards = this.allCards ?? [];
-    let idCount = 0;
+    let idCount = 1;
     for (const c of this.allCards) {
       c.level = c.level ?? 1;
       c.id = idCount++;
