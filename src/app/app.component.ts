@@ -1,6 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Card} from './Card';
+import {group} from '@angular/animations';
+import {GroupByUtil} from './utilities/groupByUtil';
+
 
 @Component({
   selector: 'app-root',
@@ -15,6 +18,9 @@ export class AppComponent  implements OnInit {
 
   title = 'FlashCard2';
   public curCard: Card = null;
+  public showInformation = false;
+  public addNewCard = false;
+  public showImport = false;
   public cardToDelete: Card = null;
   public allCards: Card[] = [];
   public remainingCardsInSet: Card[] = [];
@@ -27,6 +33,9 @@ export class AppComponent  implements OnInit {
 
   @Input()
   public description: string;
+
+  @Input()
+  public importText: string;
 
   private static copyTextToClipboard(text: string): void {
     const textArea = document.createElement('textarea');
@@ -52,16 +61,23 @@ export class AppComponent  implements OnInit {
   }
 
   public createCard(): void {
+    if (this.allCards.filter(c => c.name === this.name).length > 0) {
+      alert('The symbol ' + this.name + ' already exists.');
+      return;
+    }
     this.allCards.push({
       numCorrect: 0,
       numWrong: 0,
-      ID: this.allCards.length + 1,
-      Name: this.name,
-      Pinyin: this.pinyin,
-      Description: this.description
+      id: this.allCards.length + 1,
+      name: this.name,
+      pinyin: this.pinyin,
+      description: this.description,
+      level: 1
     });
-    this.curCard = this.allCards[0];
-    this.saveAllLocalAndClearCardToDelete();
+    this.name = '';
+    this.pinyin = '';
+    this.description = '';
+    this.showNextCard();
   }
 
   private saveAllLocalAndClearCardToDelete(): void {
@@ -91,38 +107,101 @@ export class AppComponent  implements OnInit {
   }
 
   public import(): void {
-    if (!this.description) {
+    if (!this.showImport){
+      this.showImport = true;
       return;
     }
-    if (this.description.charAt(0) !== '[') {
-      this.description = '';
+
+    if (!this.importText) {
+      this.showImport = false;
+      return;
     }
 
-    this.allCards = JSON.parse(this.description) ?? [];
-    this.description = '';
-    this.curCard = this.allCards[0];
-  }
+    if (this.importText.charAt(0) !== '[') {
+      this.importText = '';
+    }
+
+    this.allCards = JSON.parse(this.importText) ?? [];
+    this.importText = '';
+    this.showImport = false;
+    this.remainingCardsInSet = [];
+    this.showNextCard();
+    }
 
   public wrongClicked(): void{
     this.curCard.numWrong++;
+    this.curCard.level--;
+    if (this.curCard.level <= 0) {
+      this.curCard.level = 1;
+    }
+
     this.showNextCard();
   }
 
   public rightClicked(): void{
     this.curCard.numCorrect++;
+    this.curCard.level++;
     this.showNextCard();
   }
-  private showNextCard(): void{
+
+  private shuffleArray(array: any[]): void {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  public getGroupSize(level: number): number {
+    return 3 * Math.pow(2, level - 1);
+  }
+
+  private showNextCard(): void {
+    this.allCards = this.allCards ?? [];
+    let idCount = 0;
+    for (const c of this.allCards) {
+      c.level = c.level ?? 1;
+      c.id = idCount++;
+
+      // Add same number of new lines for all descciptions
+      for (let j = 0; j < 3 - c.description.split('\n').length; j++){
+        c.description += '\n';
+      }
+    }
+    this.saveAllLocalAndClearCardToDelete();
+    this.showInformation = false;
+
     if (this.remainingCardsInSet.length <= 1) {
-      const levelAndCards = this.allCards
-        .map(c =>  ({card: c, level: (c.numCorrect - c.numCorrect)}))
-        .sort((n1, n2) => n1.level - n2.level);
-      const grouped = levelAndCards.reduce((h, obj) => Object.assign(h, { [obj.level]:( h[obj.level] || [] ).concat(obj) }), {});
-      this.remainingCardsInSet = grouped[0].map(c => c.card);
-      this.curCard = this.remainingCardsInSet[0];
+      const grouped = GroupByUtil.groupBy(this.allCards, (c) => c.level).sort((a, b) => b.key - a.key);
+      this.remainingCardsInSet = [];
+      const prevCard = this.curCard;
+      for (const obj of grouped) {
+        const level = obj.key as number;
+        const group2 = obj.values as Card[];
+        const groupSize = 3 * Math.pow(2, level - 1);
+        if (group2.length >= groupSize) {
+          this.remainingCardsInSet = group2.sort((a, b) => a.id - b.id).slice(0, groupSize);
+          while (true) {
+            this.shuffleArray(this.remainingCardsInSet);
+            if (this.remainingCardsInSet[0] !== prevCard) {
+              break;
+            }
+          }
+        }
+      }
+      if (this.remainingCardsInSet.length === 0) {
+        this.curCard = null;
+        this.addNewCard = true;
+      } else {
+        this.curCard = this.remainingCardsInSet[0];
+        this.addNewCard = false;
+      }
     } else {
       this.remainingCardsInSet = this.remainingCardsInSet.slice(1);
       this.curCard = this.remainingCardsInSet[0];
     }
+  }
+
+  public cardClicked(): void{
+    this.showInformation = true;
   }
 }

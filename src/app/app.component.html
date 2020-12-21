@@ -1,33 +1,48 @@
 <div class="d-flex flex-column" >
-  <div class="text-center" style="font-size:100px">
-    {{curCard?.Name}} <br>
+  <div class="d-flex flex-column m-3" style="border: solid;border-radius: 5px" (click)="cardClicked()">
+    <div class="text-center" style="font-size:30px">
+      {{getGroupSize(curCard?.level) - remainingCardsInSet.length + 1}} / {{getGroupSize(curCard?.level)}}
+    </div>
+  <div class="text-center" style="font-size:100px" >
+    {{curCard?.name}} <br>
   </div>
-  <div class="text-center h2">
-    {{curCard?.Pinyin}}
+  <div class="d-flex flex-column" [style.visibility]="showInformation ? 'visible' : 'hidden'">
+    <div class="text-center h2">
+      {{curCard?.pinyin}}
+    </div>
+    <div class="h3 pl-5 pr-5" style="white-space: pre">
+  {{curCard?.description}}
+    </div>
+    <br>
   </div>
-  <div class="h3 pl-5 pr-5" style="white-space: pre">
-{{curCard?.Description}}
   </div>
-  <br>
-  <div class="d-flex flex-row">
+
+  <div class="d-flex flex-row" [style.visibility]="showInformation ? 'visible' : 'hidden'">
     <div class="flex-fill"></div>
     <button class="flex-fill" (click)="wrongClicked()" style="background-color: indianred; height: 70px" >Wrong</button>
     <div class="flex-fill"></div>
     <button class="flex-fill" (click)="rightClicked()" style="background-color: darkseagreen; height: 70px">Right</button>
     <div class="flex-fill"></div>
   </div>
+
   <br>
   <br>
-  Name
-  <input title="Name" [(ngModel)]="name"/>
-  Pinyin
-  <input title="Pinyin" [(ngModel)]="pinyin"/>
-  Description
-  <textarea title="Description" [(ngModel)]="description"></textarea>
-  <button (click)="createCard()">Create new flash card</button>
+  <div *ngIf="addNewCard" class="d-flex flex-column pl-2 pr-2">
+    <b>New flash card needed</b>
+    Name
+    <input title="Name" [(ngModel)]="name"/>
+    Pinyin
+    <input title="Pinyin" [(ngModel)]="pinyin"/>
+    Description
+    <textarea title="Description" [(ngModel)]="description"></textarea>
+    <button class="p-2" (click)="createCard()">Create new flash card</button>
+  </div>
+
+  <textarea *ngIf="showImport" title="Import" [(ngModel)]="description"></textarea>
+
   <br>
   <br>
-  Delete: {{cardToDelete?.Name}}
+  Delete: {{cardToDelete?.name}}
   <div class="d-flex flex-row">
   <button (click)="deleteCard()">Delete card</button>
     <div class="flex-fill"></div>
