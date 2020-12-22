@@ -170,10 +170,12 @@ export class AppComponent  implements OnInit {
       const grouped = GroupByUtil.groupBy(this.allCards, (c) => c.level).sort((a, b) => b.key - a.key);
       this.remainingCardsInSet = [];
       const prevCard = this.curCard;
+      console.log('groups:');
       for (const obj of grouped) {
         const level = obj.key as number;
         const group2 = obj.values as Card[];
         const groupSize = this.getGroupSize(level);
+        console.log(level + ' ' + group2.length + ' gs: ' + groupSize);
         if (group2.length >= groupSize) {
           this.remainingCardsInSet = group2.sort((a, b) => a.id - b.id).slice(0, groupSize);
           while (true) {
@@ -182,6 +184,7 @@ export class AppComponent  implements OnInit {
               break;
             }
           }
+          break;
         }
       }
       if (this.remainingCardsInSet.length === 0) {
