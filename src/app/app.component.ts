@@ -130,11 +130,7 @@ export class AppComponent  implements OnInit {
 
   public wrongClicked(): void{
     this.curCard.numWrong++;
-    this.curCard.level--;
-    if (this.curCard.level <= 0) {
-      this.curCard.level = 1;
-    }
-
+    this.curCard.level = 1;
     this.showNextCard();
   }
 
@@ -152,7 +148,7 @@ export class AppComponent  implements OnInit {
   }
 
   public getGroupSize(level: number): number {
-    return 3 * Math.pow(2, level - 1);
+    return Math.round(3 * Math.pow(1.5, level - 1));
   }
 
   private showNextCard(): void {
@@ -177,7 +173,7 @@ export class AppComponent  implements OnInit {
       for (const obj of grouped) {
         const level = obj.key as number;
         const group2 = obj.values as Card[];
-        const groupSize = 3 * Math.pow(2, level - 1);
+        const groupSize = this.getGroupSize(level);
         if (group2.length >= groupSize) {
           this.remainingCardsInSet = group2.sort((a, b) => a.id - b.id).slice(0, groupSize);
           while (true) {
