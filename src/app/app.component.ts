@@ -78,6 +78,7 @@ export class AppComponent  implements OnInit {
     this.name = '';
     this.pinyin = '';
     this.description = '';
+    this.remainingCardsInSet = [];
     this.showNextCard();
   }
 
