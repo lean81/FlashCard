@@ -1,20 +1,20 @@
 <div class="d-flex flex-column" >
+  <div class="text-center" style="font-size:30px">
+    {{getGroupSize(curCard?.level) - remainingCardsInSet.length + 1}} / {{getGroupSize(curCard?.level)}}
+  </div>
   <div class="d-flex flex-column m-3" style="border: solid;border-radius: 5px" (click)="cardClicked()">
-    <div class="text-center" style="font-size:30px">
-      {{getGroupSize(curCard?.level) - remainingCardsInSet.length + 1}} / {{getGroupSize(curCard?.level)}}
+    <div class="text-center" style="font-size:100px" >
+      {{curCard?.name}} <br>
     </div>
-  <div class="text-center" style="font-size:100px" >
-    {{curCard?.name}} <br>
-  </div>
-  <div class="d-flex flex-column" [style.visibility]="showInformation ? 'visible' : 'hidden'">
-    <div class="text-center h2">
-      {{curCard?.pinyin}}
+    <div class="d-flex flex-column" [style.visibility]="showInformation ? 'visible' : 'hidden'">
+      <div class="text-center h2">
+        {{curCard?.pinyin}}
+      </div>
+      <div class="h3 pl-5 pr-5" style="white-space: pre">
+    {{curCard?.description}}
+      </div>
+      <br>
     </div>
-    <div class="h3 pl-5 pr-5" style="white-space: pre">
-  {{curCard?.description}}
-    </div>
-    <br>
-  </div>
   </div>
 
   <div class="d-flex flex-row" [style.visibility]="showInformation ? 'visible' : 'hidden'">
@@ -27,7 +27,7 @@
 
   <br>
   <br>
-  <div *ngIf="addNewCard" class="d-flex flex-column pl-2 pr-2">
+  <div *ngIf="addNewCard || editingCard" class="d-flex flex-column pl-2 pr-2">
     <b>New flash card needed</b>
     Name
     <input title="Name" [(ngModel)]="name"/>
@@ -45,6 +45,7 @@
   Delete: {{cardToDelete?.name}}
   <div class="d-flex flex-row">
   <button (click)="deleteCard()">Delete card</button>
+    <button (click)="editCard()">Edit card</button>
     <div class="flex-fill"></div>
     <button (click)="copyToClipBoard()">Copy all to clipboard</button>
     <button (click)="import()">Import</button>

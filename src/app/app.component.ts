@@ -20,6 +20,7 @@ export class AppComponent  implements OnInit {
   public curCard: Card = null;
   public showInformation = false;
   public addNewCard = false;
+  public editingCard = false;
   public showImport = false;
   public cardToDelete: Card = null;
   public allCards: Card[] = [];
@@ -152,6 +153,7 @@ export class AppComponent  implements OnInit {
   }
 
   private showNextCard(): void {
+    this.editingCard = false;
     this.allCards = this.allCards ?? [];
     let idCount = 1;
     for (const c of this.allCards) {
@@ -170,12 +172,13 @@ export class AppComponent  implements OnInit {
       const grouped = GroupByUtil.groupBy(this.allCards, (c) => c.level).sort((a, b) => b.key - a.key);
       this.remainingCardsInSet = [];
       const prevCard = this.curCard;
-      console.log('groups:');
+
+      let mostFilledGroup: Card[] = null;
       for (const obj of grouped) {
         const level = obj.key as number;
         const group2 = obj.values as Card[];
         const groupSize = this.getGroupSize(level);
-        console.log(level + ' ' + group2.length + ' gs: ' + groupSize);
+        // console.log(level + ' ' + group2.length + ' gs: ' + groupSize);
         if (group2.length >= groupSize) {
           this.remainingCardsInSet = group2.sort((a, b) => a.id - b.id).slice(0, groupSize);
           while (true) {
@@ -186,10 +189,26 @@ export class AppComponent  implements OnInit {
           }
           break;
         }
+        if (mostFilledGroup == null ||
+          group2.length / this.getGroupSize(group2[0].level) >
+          mostFilledGroup.length / this.getGroupSize(mostFilledGroup[0].level)
+          ) {
+          mostFilledGroup = group2;
+        }
       }
+
       if (this.remainingCardsInSet.length === 0) {
-        this.curCard = null;
-        this.addNewCard = true;
+        this.name = '';
+        this.description = '';
+        this.pinyin = '';
+        if (mostFilledGroup == null) {
+          this.curCard = null;
+          this.addNewCard = true;
+        }else {
+          this.remainingCardsInSet = mostFilledGroup;
+          this.curCard = this.remainingCardsInSet[0];
+          this.addNewCard = true;
+        }
       } else {
         this.curCard = this.remainingCardsInSet[0];
         this.addNewCard = false;
@@ -202,5 +221,23 @@ export class AppComponent  implements OnInit {
 
   public cardClicked(): void{
     this.showInformation = true;
+  }
+
+  public editCard(): void {
+    if (!this.curCard) {
+      return;
+    }
+
+    if (this.editingCard) {
+      this.curCard.name = this.name;
+      this.curCard.description = this.description;
+      this.curCard.pinyin = this.pinyin;
+      this.editingCard = false;
+    }else {
+      this.name = this.curCard.name;
+      this.description = this.curCard.description;
+      this.pinyin = this.curCard.pinyin;
+      this.editingCard = true;
+    }
   }
 }
