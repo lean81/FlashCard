@@ -25,6 +25,7 @@ export class AppComponent  implements OnInit {
   public cardToDelete: Card = null;
   public allCards: Card[] = [];
   public remainingCardsInSet: Card[] = [];
+  public currentLevel = 0;
 
   @Input()
   public name: string;
@@ -174,18 +175,30 @@ export class AppComponent  implements OnInit {
     this.saveAllLocalAndClearCardToDelete();
     this.showInformation = false;
 
+
     if (this.remainingCardsInSet.length <= 1) {
+      this.addNewCard = true;
       const grouped = GroupByUtil.groupBy(this.allCards, (c) => c.level).sort((a, b) => b.key - a.key);
       this.remainingCardsInSet = [];
       const prevCard = this.curCard;
 
-      let mostFilledGroup: Card[] = null;
       for (const obj of grouped) {
         const level = obj.key as number;
         const group2 = obj.values as Card[];
         const groupSize = this.getGroupSize(level);
+
+
+        if (group2.length < groupSize) {
+          for (const lowerGroup of grouped.filter(g => g.key < level)) {
+            group2.push(...lowerGroup.values);
+          }
+        }else {
+          this.addNewCard = false;
+        }
+
         // console.log(level + ' ' + group2.length + ' gs: ' + groupSize);
         if (group2.length >= groupSize) {
+          this.currentLevel = level;
           this.remainingCardsInSet = group2.sort((a, b) => a.id - b.id).slice(0, groupSize);
           while (true) {
             this.shuffleArray(this.remainingCardsInSet);
@@ -196,31 +209,21 @@ export class AppComponent  implements OnInit {
               break;
             }
           }
-          break;
-        }
-        if (mostFilledGroup == null ||
-          group2.length / this.getGroupSize(group2[0].level) >
-          mostFilledGroup.length / this.getGroupSize(mostFilledGroup[0].level)
-          ) {
-          mostFilledGroup = group2;
+          // If the level have enough cards we use this level. If it doesn't we try a lower level
+          if (!this.addNewCard) {
+            break;
+          }
         }
       }
 
       if (this.remainingCardsInSet.length === 0) {
+        this.curCard = null;
+        this.currentLevel = 0;
         this.name = '';
         this.description = '';
         this.pinyin = '';
-        if (mostFilledGroup == null) {
-          this.curCard = null;
-          this.addNewCard = true;
-        }else {
-          this.remainingCardsInSet = mostFilledGroup;
-          this.curCard = this.remainingCardsInSet[0];
-          this.addNewCard = true;
-        }
       } else {
         this.curCard = this.remainingCardsInSet[0];
-        this.addNewCard = false;
       }
     } else {
       this.remainingCardsInSet = this.remainingCardsInSet.slice(1);
