@@ -153,6 +153,11 @@ export class AppComponent  implements OnInit {
     return Math.round(3 * Math.pow(1.5, level - 1));
   }
 
+  public getLimitedGroupSize(level: number): number {
+    const size = this.getGroupSize(level);
+    return Math.min(size, 12);
+  }
+
   private showNextCard(): void {
     this.editingCard = false;
     this.allCards = this.allCards ?? [];
@@ -185,6 +190,9 @@ export class AppComponent  implements OnInit {
           while (true) {
             this.shuffleArray(this.remainingCardsInSet);
             if (this.remainingCardsInSet[0] !== prevCard) {
+              if (this.remainingCardsInSet.length > this.getLimitedGroupSize(level)) {
+                this.remainingCardsInSet = this.remainingCardsInSet.slice(0, this.getLimitedGroupSize(level));
+              }
               break;
             }
           }

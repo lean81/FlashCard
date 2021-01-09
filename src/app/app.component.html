@@ -1,6 +1,6 @@
 <div class="d-flex flex-column" >
   <div class="text-center" style="font-size:30px">
-    {{getGroupSize(curCard?.level) - remainingCardsInSet.length + 1}} / {{getGroupSize(curCard?.level)}}
+    {{getGroupSize(curCard?.level) - remainingCardsInSet.length + 1}} / {{getLimitedGroupSize(curCard?.level)}} - {{curCard.level}}
   </div>
   <div class="d-flex flex-column m-3" style="border: solid;border-radius: 5px" (click)="cardClicked()">
     <div class="text-center" style="font-size:100px" >

@@ -124,5 +124,8 @@
       }
     }
   },
-  "defaultProject": "FlashCard"
+  "defaultProject": "FlashCard",
+  "cli": {
+    "analytics": "92aef3a7-0c0c-4fea-a3e6-2b2f8fdb639a"
+  }
 }
