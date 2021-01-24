@@ -167,7 +167,7 @@ export class AppComponent  implements OnInit {
       c.level = c.level ?? 1;
       c.id = idCount++;
 
-      // Add same number of new lines for all descciptions
+      // Add same number of new lines for all descriptions
       for (let j = 0; j < 3 - c.description.split('\n').length; j++){
         c.description += '\n';
       }
@@ -176,9 +176,11 @@ export class AppComponent  implements OnInit {
     this.showInformation = false;
 
 
+    let smallestGroup: Card[] = null;
+    let smallestLevel = 0;
     if (this.remainingCardsInSet.length <= 1) {
       this.addNewCard = true;
-      const grouped = GroupByUtil.groupBy(this.allCards, (c) => c.level).sort((a, b) => b.key - a.key);
+      const grouped = GroupByUtil.groupBy(this.allCards, (c) => c.level).sort((a, b) => a.key - b.key);
       this.remainingCardsInSet = [];
       const prevCard = this.curCard;
 
@@ -189,8 +191,9 @@ export class AppComponent  implements OnInit {
 
 
         if (group2.length < groupSize) {
-          for (const lowerGroup of grouped.filter(g => g.key < level)) {
-            group2.push(...lowerGroup.values);
+          for (const higherGroup of grouped.filter(g => g.key > level)) {
+            const needed = higherGroup.values.slice(0, groupSize - group2.length);
+            group2.push(...needed);
           }
         }else {
           this.addNewCard = false;
@@ -203,17 +206,20 @@ export class AppComponent  implements OnInit {
           while (true) {
             this.shuffleArray(this.remainingCardsInSet);
             if (this.remainingCardsInSet[0] !== prevCard) {
-              if (this.remainingCardsInSet.length > this.getLimitedGroupSize(level)) {
                 this.remainingCardsInSet = this.remainingCardsInSet.slice(0, this.getLimitedGroupSize(level));
-              }
-              break;
+                if (!smallestGroup){
+                  smallestGroup = this.remainingCardsInSet;
+                  smallestLevel = level;
+                }
+                break;
             }
           }
-          // If the level have enough cards we use this level. If it doesn't we try a lower level
-          if (!this.addNewCard) {
-            break;
-          }
         }
+      }
+
+      if (this.addNewCard && smallestGroup) {
+        this.remainingCardsInSet = smallestGroup;
+        this.currentLevel = smallestLevel;
       }
 
       if (this.remainingCardsInSet.length === 0) {
