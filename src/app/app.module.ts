@@ -6,6 +6,7 @@ import { ShowCardComponent } from './show-card/show-card.component';
 import {RouterModule, Routes} from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {FormsModule} from '@angular/forms';
+import {HttpClientModule} from '@angular/common/http';
 
 const appRoutes: Routes = [
   { path: 'showCard', component: ShowCardComponent },
@@ -21,7 +22,8 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     // NgbModule.forRoot(),
     NgbModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
   exports: [ RouterModule ],
   providers: [],

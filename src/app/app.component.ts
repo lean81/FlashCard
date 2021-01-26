@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Card} from './Card';
-import {group} from '@angular/animations';
 import {GroupByUtil} from './utilities/groupByUtil';
+import {HttpClient} from '@angular/common/http';
 
 
 @Component({
@@ -12,7 +12,7 @@ import {GroupByUtil} from './utilities/groupByUtil';
 })
 export class AppComponent  implements OnInit {
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private http: HttpClient) {
   }
 
 
@@ -57,8 +57,15 @@ export class AppComponent  implements OnInit {
     document.body.removeChild(textArea);
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.allCards = JSON.parse(localStorage.getItem('allFlashCards')) ?? [];
+    const chineseCards = await ((this.http.get('assets/chinese.json')).toPromise()) as Card[];
+    for (const c of chineseCards) {
+      if (this.allCards.findIndex(ce => c.name === ce.name) < 0) {
+        this.allCards.push(c);
+      }
+    }
+
     this.showNextCard();
   }
 
