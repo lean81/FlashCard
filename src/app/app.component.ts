@@ -117,7 +117,7 @@ export class AppComponent  implements OnInit {
   }
 
   public import(): void {
-    if (!this.showImport){
+    if (!this.showImport) {
       this.showImport = true;
       return;
     }
@@ -136,16 +136,16 @@ export class AppComponent  implements OnInit {
     this.showImport = false;
     this.remainingCardsInSet = [];
     this.showNextCard();
-    }
+  }
 
-  public wrongClicked(): void{
+  public wrongClicked(): void {
     this.curCard.numWrong++;
     this.curCard.level = 1;
     this.showNextCard();
   }
 
   public rightClicked(): void {
-    if (this.curCard.level === this.currentLevel){
+    if (this.curCard.level === this.currentLevel) {
       this.curCard.numCorrect++;
       this.curCard.level++;
     }
@@ -177,7 +177,7 @@ export class AppComponent  implements OnInit {
       c.id = idCount++;
 
       // Add same number of new lines for all descriptions
-      for (let j = 0; j < 3 - c.description.split('\n').length; j++){
+      for (let j = 0; j < 3 - c.description.split('\n').length; j++) {
         c.description += '\n';
       }
     }
@@ -195,34 +195,40 @@ export class AppComponent  implements OnInit {
 
       for (const obj of grouped) {
         const level = obj.key;
-        const group2 = obj.values as Card[];
+        const group2 = (obj.values as Card[]).slice();
         const groupSize = this.getGroupSize(level);
 
 
+        var fullGroup = false;
         if (group2.length < groupSize) {
+          fullGroup = false;
           for (const higherGroup of grouped.filter(g => g.key > level)) {
             const higherGroupRandomized = higherGroup.values.slice();
             this.shuffleArray(higherGroupRandomized);
             const needed = higherGroupRandomized.slice(0, groupSize - group2.length);
             group2.push(...needed);
           }
-        }else {
+        } else {
+          fullGroup = true;
           this.addNewCard = false;
         }
 
         // console.log(level + ' ' + group2.length + ' gs: ' + groupSize);
         if (group2.length >= groupSize) {
-          this.currentLevel = level;
-          this.remainingCardsInSet = group2.sort((a, b) => a.id - b.id).slice(0, groupSize);
+          let newRemainingCardsInSet = group2.sort((a, b) => a.id - b.id).slice(0, groupSize);
           while (true) {
-            this.shuffleArray(this.remainingCardsInSet);
-            if (this.remainingCardsInSet[0] !== prevCard) {
-                this.remainingCardsInSet = this.remainingCardsInSet.slice(0, this.getLimitedGroupSize(level));
-                if (!smallestGroup){
-                  smallestGroup = this.remainingCardsInSet;
-                  smallestLevel = level;
-                }
-                break;
+            this.shuffleArray(newRemainingCardsInSet);
+            if (newRemainingCardsInSet[0] !== prevCard) {
+              newRemainingCardsInSet = newRemainingCardsInSet.slice(0, this.getLimitedGroupSize(level));
+              if (!smallestGroup) {
+                smallestGroup = newRemainingCardsInSet;
+                smallestLevel = level;
+              }
+              if (fullGroup) {
+                this.remainingCardsInSet = newRemainingCardsInSet;
+                this.currentLevel = level;
+              }
+              break;
             }
           }
         }
@@ -248,7 +254,7 @@ export class AppComponent  implements OnInit {
     }
   }
 
-  public cardClicked(): void{
+  public cardClicked(): void {
     this.showInformation = true;
   }
 
@@ -262,7 +268,7 @@ export class AppComponent  implements OnInit {
       this.curCard.description = this.description;
       this.curCard.pinyin = this.pinyin;
       this.editingCard = false;
-    }else {
+    } else {
       this.name = this.curCard.name;
       this.description = this.curCard.description;
       this.pinyin = this.curCard.pinyin;
