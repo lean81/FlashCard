@@ -270,7 +270,7 @@ export class AppComponent  implements OnInit {
     }
   }
 
-  public showAllCard() {
+  public showAllCard(): void {
     this.showAllCards = !this.showAllCards;
 
   }

@@ -52,7 +52,7 @@
     <button (click)="showAllCard()">Show all</button>
   </div>
   <div *ngIf="showAllCards">
-    <div *ngFor="let card of allCards.reverse()">
+    <div *ngFor="let card of allCards.slice().reverse()">
       {{card.id}} {{card.name}} {{card.pinyin}} {{card.level}}
     </div>
   </div>
