@@ -47,7 +47,14 @@
   <button (click)="deleteCard()">Delete card</button>
     <button (click)="editCard()">Edit card</button>
     <div class="flex-fill"></div>
-    <button (click)="copyToClipBoard()">Copy all to clipboard</button>
+    <button (click)="copyToClipBoard()">Copy</button>
     <button (click)="import()">Import</button>
+    <button (click)="showAllCard()">Show all</button>
   </div>
+  <div *ngIf="showAllCards">
+    <div *ngFor="let card of allCards.reverse()">
+      {{card.id}} {{card.name}} {{card.pinyin}} {{card.level}}
+    </div>
+  </div>
+
 </div>

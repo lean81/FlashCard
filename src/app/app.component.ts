@@ -11,7 +11,6 @@ import {HttpClient} from '@angular/common/http';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent  implements OnInit {
-
   constructor(private router: Router, private http: HttpClient) {
   }
 
@@ -26,6 +25,7 @@ export class AppComponent  implements OnInit {
   public allCards: Card[] = [];
   public remainingCardsInSet: Card[] = [];
   public currentLevel = 0;
+  public showAllCards: boolean;
 
   @Input()
   public name: string;
@@ -268,5 +268,10 @@ export class AppComponent  implements OnInit {
       this.pinyin = this.curCard.pinyin;
       this.editingCard = true;
     }
+  }
+
+  public showAllCard() {
+    this.showAllCards = !this.showAllCards;
+
   }
 }
