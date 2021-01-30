@@ -59,12 +59,12 @@ export class AppComponent  implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.allCards = JSON.parse(localStorage.getItem('allFlashCards')) ?? [];
-    const chineseCards = await ((this.http.get('assets/chinese.json')).toPromise()) as Card[];
+    /*const chineseCards = await ((this.http.get('assets/chinese.json')).toPromise()) as Card[];
     for (const c of chineseCards) {
       if (this.allCards.findIndex(ce => c.name === ce.name) < 0) {
         this.allCards.push(c);
       }
-    }
+    }*/
 
     this.showNextCard();
   }
