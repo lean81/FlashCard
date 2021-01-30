@@ -144,9 +144,11 @@ export class AppComponent  implements OnInit {
     this.showNextCard();
   }
 
-  public rightClicked(): void{
-    this.curCard.numCorrect++;
-    this.curCard.level++;
+  public rightClicked(): void {
+    if (this.curCard.level === this.currentLevel){
+      this.curCard.numCorrect++;
+      this.curCard.level++;
+    }
     this.showNextCard();
   }
 
@@ -192,14 +194,16 @@ export class AppComponent  implements OnInit {
       const prevCard = this.curCard;
 
       for (const obj of grouped) {
-        const level = obj.key as number;
+        const level = obj.key;
         const group2 = obj.values as Card[];
         const groupSize = this.getGroupSize(level);
 
 
         if (group2.length < groupSize) {
           for (const higherGroup of grouped.filter(g => g.key > level)) {
-            const needed = higherGroup.values.slice(0, groupSize - group2.length);
+            const higherGroupRandomized = higherGroup.values.slice();
+            this.shuffleArray(higherGroupRandomized);
+            const needed = higherGroupRandomized.slice(0, groupSize - group2.length);
             group2.push(...needed);
           }
         }else {

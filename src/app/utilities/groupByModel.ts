@@ -1,4 +1,4 @@
 export interface GroupByModel {
-    key: any;
+    key: number;
     values: any[];
 }

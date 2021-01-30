@@ -16,7 +16,7 @@ export class GroupByUtil {
         continue;
       }
       groupByModels.push({
-        key: obj,
+        key: parseInt(obj, 10),
         values: groupByObjects[obj]
       });
     }
