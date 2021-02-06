@@ -3,13 +3,25 @@
     <b>{{getLimitedGroupSize(currentLevel) - remainingCardsInSet.length + 1}} / {{getLimitedGroupSize(currentLevel)}}</b> (level {{currentLevel}})
   </div>
   <div *ngIf="curCard" class="d-flex flex-column m-3" style="border: solid;border-radius: 5px" (click)="cardClicked()">
-    <div class="text-center" style="font-size:100px" >
+    <div class="text-center"  [style.font-family]="currentFontFamily" style="font-size:100px;">
       {{curCard?.name}} <br>
     </div>
     <div class="d-flex flex-column" [style.visibility]="showInformation ? 'visible' : 'hidden'">
       <div class="text-center h2">
         {{curCard?.pinyin}}
       </div>
+      <div class="d-flex flex-fill flex-row text-center justify-content-center">
+        <div *ngIf="currentFontFamily" class="text-center h2  pl-3 pr-3" style="font-size:70px;">
+          {{curCard?.name}}
+        </div>
+        <div *ngIf="currentFontFamily != 'handwriting'" class="text-center h2 pl-3 pr-3" style="font-size:70px;font-family: handwriting">
+          {{curCard?.name}}
+        </div>
+        <div *ngIf="currentFontFamily != 'caligraphy'" class="text-center h2   pl-3 pr-3" style="font-size:70px;font-family: caligraphy">
+          {{curCard?.name}}
+        </div>
+      </div>
+
       <div class="h3 pl-5 pr-5" style="white-space: pre">
     {{curCard?.description}}
       </div>

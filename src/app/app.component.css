@@ -1,0 +1,9 @@
+
+@font-face {
+  font-family: 'handwriting';
+  src: local('cwTeXQKaiZH-Medium'), url('../assets/STSong.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'caligraphy';
+  src: local('SentyWEN2017'), url('../assets/SentyWEN2017.ttf') format('truetype');
+}

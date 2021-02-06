@@ -11,6 +11,7 @@ import {HttpClient} from '@angular/common/http';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent  implements OnInit {
+  public currentFontFamily: string;
   constructor(private router: Router, private http: HttpClient) {
   }
 
@@ -59,12 +60,12 @@ export class AppComponent  implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.allCards = JSON.parse(localStorage.getItem('allFlashCards')) ?? [];
-    /*const chineseCards = await ((this.http.get('assets/chinese.json')).toPromise()) as Card[];
+    const chineseCards = await ((this.http.get('assets/chinese.json')).toPromise()) as Card[];
     for (const c of chineseCards) {
       if (this.allCards.findIndex(ce => c.name === ce.name) < 0) {
         this.allCards.push(c);
       }
-    }*/
+    }
 
     this.showNextCard();
   }
@@ -184,6 +185,7 @@ export class AppComponent  implements OnInit {
     this.saveAllLocalAndClearCardToDelete();
     this.showInformation = false;
 
+    this.setRandomFontFamily();
 
     let smallestGroup: Card[] = null;
     let smallestLevel = 0;
@@ -279,5 +281,24 @@ export class AppComponent  implements OnInit {
   public showAllCard(): void {
     this.showAllCards = !this.showAllCards;
 
+  }
+
+  public getRandomInt(max: number): number {
+      return Math.floor(Math.random() * Math.floor(max));
+  }
+
+  private setRandomFontFamily(): void {
+    const n = this.getRandomInt(3);
+    switch (n){
+      case 0:
+        this.currentFontFamily = 'handwriting';
+        break;
+      case 1:
+        this.currentFontFamily = 'caligraphy';
+        break;
+      case 2:
+        this.currentFontFamily = undefined;
+        break;
+    }
   }
 }
