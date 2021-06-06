@@ -288,16 +288,16 @@ export class AppComponent  implements OnInit {
   }
 
   private setRandomFontFamily(): void {
-    const n = this.getRandomInt(3);
+    const n = this.getRandomInt(2);
     switch (n){
       case 0:
-        this.currentFontFamily = 'handwriting';
+        this.currentFontFamily = undefined;
         break;
       case 1:
-        this.currentFontFamily = 'caligraphy';
+        this.currentFontFamily = 'handwriting';
         break;
       case 2:
-        this.currentFontFamily = undefined;
+        this.currentFontFamily = 'caligraphy';
         break;
     }
   }
